@@ -72,6 +72,12 @@ dest_lang = ttk.Combobox(lang_frame, values=languages, width=20)
 dest_lang.grid(row=0, column=1, padx=50)
 dest_lang.set("hindi")
 
+def show_toast(message, color="#f44336"):
+    toast = Label(root, text=message, font=("Arial", 14, "bold"), bg=color, fg="white", padx=20, pady=10, relief=RIDGE, bd=2)
+    toast.place(relx=0.5, y=50, anchor=CENTER)
+    toast.lift()
+    root.after(3000, toast.destroy)
+
 def Translate():
     try:
         text = Input_text.get(1.0, END).strip()
@@ -79,7 +85,7 @@ def Translate():
         dest = dest_lang.get()
 
         if text == "":
-            messagebox.showwarning("Warning", "Please enter text")
+            show_toast("Please enter text", "#ff9800")
             return
 
         translated = GoogleTranslator(source=src, target=dest).translate(text)
@@ -88,7 +94,7 @@ def Translate():
         Output_text.insert(END, translated)
 
     except Exception as e:
-        messagebox.showerror("Error", str(e))
+        show_toast(f"Error: {str(e)[:50]}...", "#f44336")
 
 
 def Clear():
@@ -99,6 +105,10 @@ def Clear():
 def Swap():
     src = src_lang.get()
     dest = dest_lang.get()
+    
+    if src == "auto":
+        src = "english"
+        
     src_lang.set(dest)
     dest_lang.set(src)
 
